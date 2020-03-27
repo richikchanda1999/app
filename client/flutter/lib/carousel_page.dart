@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:WHOFlutter/constants.dart';
 import 'package:WHOFlutter/page_scaffold.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:page_view_indicator/page_view_indicator.dart';
+import 'package:scrolling_page_indicator/scrolling_page_indicator.dart';
 
 class CarouselSlide extends StatelessWidget {
   final Widget titleWidget;
@@ -45,14 +45,12 @@ class CarouselSlide extends StatelessWidget {
   }
 }
 
-
 class CarouselView extends StatelessWidget {
   final List<CarouselSlide> items;
 
   CarouselView(this.items);
 
-  final pageIndexNotifier = ValueNotifier<int>(0);
-
+  final int MAX = 9;
   final PageController pageController = PageController();
 
   @override
@@ -62,7 +60,6 @@ class CarouselView extends StatelessWidget {
         children: <Widget>[
           PageView(
             controller: pageController,
-            onPageChanged: (i) => pageIndexNotifier.value = i,
             children: this.items,
           ),
           Align(
@@ -102,24 +99,15 @@ class CarouselView extends StatelessWidget {
           constraints: BoxConstraints(maxWidth: width * 0.75),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: PageViewIndicator(
-              pageIndexNotifier: pageIndexNotifier,
-              length: this.items.length,
-              normalBuilder: (animationController, index) => Circle(
-                size: 8.0,
-                color: Colors.grey,
-              ),
-              highlightedBuilder: (animationController, index) =>
-                  ScaleTransition(
-                scale: CurvedAnimation(
-                  parent: animationController,
-                  curve: Curves.ease,
-                ),
-                child: Circle(
-                  size: 10.0,
-                  color: Constants.primaryColor,
-                ),
-              ),
+            child: ScrollingPageIndicator(
+              dotSize: 8.0,
+              dotSelectedSize: 10.0,
+              dotColor: Colors.grey,
+              dotSelectedColor: Constants.primaryColor,
+              itemCount: this.items.length,
+              controller: pageController,
+              dotSpacing: 20,
+              visibleDotCount: MAX,
             ),
           ),
         ),
